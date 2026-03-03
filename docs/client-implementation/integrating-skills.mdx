@@ -162,7 +162,7 @@ Tell the model what skills exist without loading their full content. This is [ti
 
 ### Building the skill catalog
 
-For each discovered skill, include `name`, `description`, and optionally `location` (the path to the `SKILL.md` file):
+For each discovered skill, include `name`, `description`, and optionally `location` (the path to the `SKILL.md` file) in whatever structured format suits your stack — XML, JSON, or a bulleted list all work:
 
 ```xml
 <available_skills>
@@ -187,7 +187,7 @@ Each skill adds roughly 50-100 tokens to the catalog. Even with dozens of skills
 
 Two approaches are common:
 
-**System prompt section**: Add the catalog as a labeled section in the system prompt, preceded by brief instructions on how to use skills. This is the simplest approach and works with any model.
+**System prompt section**: Add the catalog as a labeled section in the system prompt, preceded by brief instructions on how to use skills. This is the simplest approach and works with any model that has access to a file-reading tool.
 
 **Tool description**: Embed the catalog in the description of a dedicated skill-activation tool (see [Step 4](#step-4-activate-skills)). This keeps the system prompt clean and naturally couples discovery with activation.
 
