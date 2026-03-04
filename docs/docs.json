@@ -28,7 +28,7 @@
       {
         "group": "For client implementors",
         "pages": [
-          "client-implementation/integrating-skills"
+          "client-implementation/adding-skills-support"
         ]
       }
     ]
@@ -48,7 +48,7 @@
   "redirects": [
     {
       "source": "/integrate-skills",
-      "destination": "/client-implementation/integrating-skills"
+      "destination": "/client-implementation/adding-skills-support"
     }
   ]
 }
