@@ -43,7 +43,10 @@ Thumbs.db
 .cursor/
 
 # Internal / AI-generated Docs
-docs/context.md
 docs/memory.md
 docs/readme/
 docs/temp/
+docs/context.md
+
+# Custom local scripts
+scripts/translate.mjs
