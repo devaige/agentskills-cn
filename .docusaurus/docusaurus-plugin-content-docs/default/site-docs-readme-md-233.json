@@ -1,0 +1,14 @@
+{
+  "id": "README",
+  "title": "Agent Skills Documentation",
+  "description": "This directory contains the source code for the Agent Skills documentation site, which is built using Mintlify.",
+  "source": "@site/docs/README.md",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/agentskills/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

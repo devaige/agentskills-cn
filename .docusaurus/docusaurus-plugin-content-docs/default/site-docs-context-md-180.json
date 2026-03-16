@@ -1,0 +1,14 @@
+{
+  "id": "context",
+  "title": "AI Memory - Architectural Decisions",
+  "description": "Overview",
+  "source": "@site/docs/context.md",
+  "sourceDirName": ".",
+  "slug": "/context",
+  "permalink": "/agentskills/context",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

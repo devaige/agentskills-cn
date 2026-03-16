@@ -1,0 +1,26 @@
+{
+  "id": "what-are-skills",
+  "title": "What are skills?",
+  "description": "Agent Skills are a lightweight, open format for extending AI agent capabilities with specialized knowledge and workflows.",
+  "source": "@site/docs/what-are-skills.mdx",
+  "sourceDirName": ".",
+  "slug": "/what-are-skills",
+  "permalink": "/what-are-skills",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "What are skills?",
+    "description": "Agent Skills are a lightweight, open format for extending AI agent capabilities with specialized knowledge and workflows."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Overview",
+    "permalink": "/home"
+  },
+  "next": {
+    "title": "Specification",
+    "permalink": "/specification"
+  }
+}

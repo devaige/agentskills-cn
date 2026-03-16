@@ -1,0 +1,14 @@
+{
+  "id": "CLAUDE",
+  "title": "CLAUDE.md",
+  "description": "This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository. The project defines an open format for teaching AI agents specialized workflows through SKILL.md files.",
+  "source": "@site/docs/CLAUDE.md",
+  "sourceDirName": ".",
+  "slug": "/CLAUDE",
+  "permalink": "/agentskills/CLAUDE",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

@@ -1,0 +1,27 @@
+{
+  "id": "skill-creation/best-practices",
+  "title": "Best practices for skill creators",
+  "description": "How to write skills that are well-scoped and calibrated to the task.",
+  "source": "@site/docs/skill-creation/best-practices.mdx",
+  "sourceDirName": "skill-creation",
+  "slug": "/skill-creation/best-practices",
+  "permalink": "/skill-creation/best-practices",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Best practices for skill creators",
+    "sidebarTitle": "Best practices",
+    "description": "How to write skills that are well-scoped and calibrated to the task."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Specification",
+    "permalink": "/specification"
+  },
+  "next": {
+    "title": "Optimizing skill descriptions",
+    "permalink": "/skill-creation/optimizing-descriptions"
+  }
+}

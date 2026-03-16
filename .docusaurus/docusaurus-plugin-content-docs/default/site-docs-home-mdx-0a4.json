@@ -1,0 +1,22 @@
+{
+  "id": "home",
+  "title": "Overview",
+  "description": "A simple, open format for giving agents new capabilities and expertise.",
+  "source": "@site/docs/home.mdx",
+  "sourceDirName": ".",
+  "slug": "/home",
+  "permalink": "/home",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Overview",
+    "description": "A simple, open format for giving agents new capabilities and expertise."
+  },
+  "sidebar": "docsSidebar",
+  "next": {
+    "title": "What are skills?",
+    "permalink": "/what-are-skills"
+  }
+}
