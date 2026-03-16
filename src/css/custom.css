@@ -82,6 +82,14 @@
   will-change: transform;
 }
 
+.logo-carousel-track.track-1 {
+  animation: logo-scroll 50s linear infinite;
+}
+
+.logo-carousel-track.track-2 {
+  animation: logo-scroll 60s linear infinite reverse;
+}
+
 @keyframes logo-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(calc(-50% - 1.5rem)); }

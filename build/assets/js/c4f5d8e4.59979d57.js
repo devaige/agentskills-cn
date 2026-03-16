@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkagentskills=self.webpackChunkagentskills||[]).push([[634],{192(e,s,t){t.r(s),t.d(s,{default:()=>a});t(4586),t(6540);var l=t(6347),n=t(6025),u=t(4848);function a(){return(0,u.jsx)(l.rd,{to:(0,n.Ay)("/home")})}}}]);

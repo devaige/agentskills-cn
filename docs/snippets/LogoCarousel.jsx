@@ -282,7 +282,7 @@ export const LogoCarousel = () => {
   return (
     <>
       <div className="logo-carousel">
-        <div className="logo-carousel-track" style={{ animation: 'logo-scroll 50s linear infinite' }}>
+        <div className="logo-carousel-track track-1">
           {row1Doubled.map((logo, i) => (
             <a key={`${logo.name}-${i}`} href={logo.url} style={{ textDecoration: 'none', border: 'none' }}>
               <img className="block dark:hidden object-contain" style={{ width: logo.width || '150px', maxWidth: '100%' }} src={logo.lightSrc} alt={logo.name} />
@@ -292,7 +292,7 @@ export const LogoCarousel = () => {
         </div>
       </div>
       <div className="logo-carousel">
-        <div className="logo-carousel-track" style={{ animation: 'logo-scroll 60s linear infinite reverse' }}>
+        <div className="logo-carousel-track track-2">
           {row2Doubled.map((logo, i) => (
             <a key={`${logo.name}-${i}`} href={logo.url} style={{ textDecoration: 'none', border: 'none' }}>
               <img className="block dark:hidden object-contain" style={{ width: logo.width || '150px', maxWidth: '100%' }} src={logo.lightSrc} alt={logo.name} />

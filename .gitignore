@@ -1,13 +1,49 @@
-# macOS
-.DS_Store
-
-# IDEs
-.idea/
-.vscode/
-
 # Dependencies
 node_modules/
+pnp.js
+.pnp.js
+.pnp.*
+.yarn/install-state.gz
 
-# Docs
-docs/readme
+# Build Outputs
+build/
+dist/
+.docusaurus/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment Variables
+.env
+.env.test
+.env*.local
+
+# OS / System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+*.db
+
+# IDEs / Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.claude/
+.cursor/
+
+# Internal / AI-generated Docs
 docs/context.md
+docs/memory.md
+docs/readme/
+docs/temp/
