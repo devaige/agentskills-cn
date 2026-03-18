@@ -1,67 +1,69 @@
 ---
-title: "Skill 创建者最佳实践"
-sidebarTitle: "最佳实践"
-description: "如何编写范围合理且针对任务进行校准的 Skills。"
+title: "Best practices for skill creators"
+sidebarTitle: "Best practices"
+description: "How to write skills that are well-scoped and calibrated to the task."
 ---
 
-## 从真实的专业知识出发
+## Start from real expertise
 
-在创建 Skill 时，一个常见的陷阱是在不提供特定领域上下文的情况下要求 LLM 生成 Skill——仅仅依赖 LLM 的通用训练知识。这会导致产生模糊、通用的流程（“适当地处理错误”、“遵循身份验证的最佳实践”），而不是那些能让 Skill 真正发挥价值的特定 API 模式、边缘情况和项目约定。
+A common pitfall in skill creation is asking an LLM to generate a skill without providing domain-specific context — relying solely on the LLM's general training knowledge. The result is vague, generic procedures ("handle errors appropriately," "follow best practices for authentication") rather than the specific API patterns, edge cases, and project conventions that make a skill valuable.
 
-有效的 Skills 建立在真实的专业知识之上。关键在于将特定领域的上下文输入到创建过程中。
+Effective skills are grounded in real expertise. The key is feeding domain-specific context into the creation process.
 
-### 从实际操作任务中提取
+### Extract from a hands-on task
 
-在与 Agent 的对话中完成一个真实任务，并在此过程中提供上下文、纠正和偏好。然后将可复用的模式提取为一个 Skill。请注意以下几点：
+Complete a real task in conversation with an agent, providing context, corrections, and preferences along the way. Then extract the reusable pattern into a skill. Pay attention to:
 
-- **行之有效的步骤** —— 导向成功的操作序列
-- **你做出的纠正** —— 你引导 Agent 调整方法的地方（例如，“使用库 X 而不是 Y”，“检查边缘情况 Z”）
-- **输入/输出格式** —— 数据输入和输出时的样子
-- **你提供的上下文** —— Agent 尚未知晓的特定于项目的事实、约定或约束
+- **Steps that worked** — the sequence of actions that led to success
+- **Corrections you made** — places where you steered the agent's approach (e.g., "use library X instead of Y," "check for edge case Z")
+- **Input/output formats** — what the data looked like going in and coming out
+- **Context you provided** — project-specific facts, conventions, or constraints the agent didn't already know
 
-### 从现有项目产物中综合
+### Synthesize from existing project artifacts
 
-当你拥有大量现有知识时，你可以将其输入给 LLM 并要求它综合出一个 Skill。从你团队实际的事件报告和运行手册中综合出的数据管道 Skill，将优于从通用的“数据工程最佳实践”文章中综合出的 Skill，因为它捕获了*你的*模式（schemas）、故障模式和恢复程序。关键在于特定于项目的材料，而不是通用的参考资料。
+When you have a body of existing knowledge, you can feed it into an LLM and ask it to synthesize a skill. A data-pipeline skill synthesized from your team's actual incident reports and runbooks will outperform one synthesized from a generic "data engineering best practices" article, because it captures *your* schemas, failure modes, and recovery procedures. The key is project-specific material, not generic references.
 
-优秀的源材料包括：
+Good source material includes:
 
-- 内部文档、运行手册和样式指南
-- API 规范、模式（schemas）和配置文件
-- 代码审查评论和问题跟踪器（捕获反复出现的关注点和审查者的期望）
-- 版本控制历史，特别是补丁和修复（通过实际更改的内容揭示模式）
-- 真实的故障案例及其解决方案
+- Internal documentation, runbooks, and style guides
+- API specifications, schemas, and configuration files
+- Code review comments and issue trackers (captures recurring concerns and reviewer expectations)
+- Version control history, especially patches and fixes (reveals patterns through what actually changed)
+- Real-world failure cases and their resolutions
 
-## 通过真实执行进行完善
+## Refine with real execution
 
-Skill 的初稿通常需要完善。在真实任务中运行该 Skill，然后将结果——所有结果，而不仅仅是失败的结果——反馈到创建过程中。问问自己：是什么触发了误报？遗漏了什么？可以删减什么？
+The first draft of a skill usually needs refinement. Run the skill against real tasks, then feed the results — all of them, not just failures — back into the creation process. Ask: what triggered false positives? What was missed? What could be cut?
 
-即使只进行一次“执行-修改”的循环，也能显著提高质量，而复杂的领域通常会从多次循环中受益。
+Even a single pass of execute-then-revise noticeably improves quality, and complex domains often benefit from several.
 
 <Tip>
-阅读 Agent 的执行轨迹，而不仅仅是最终输出。如果 Agent 在无用的步骤上浪费时间，常见原因包括指令过于模糊（Agent 在找到有效方法之前尝试了多种方法）、指令不适用于当前任务（Agent 仍然遵循了它们），或者提供了太多选项而没有明确的默认值。
+Read agent execution traces, not just final outputs. If the agent wastes time on unproductive steps, common causes include instructions that are too vague (the agent tries several approaches before finding one that works), instructions that don't apply to the current task (the agent follows them anyway), or too many options presented without a clear default.
 </Tip>
 
-有关更结构化的迭代方法（包括测试用例、断言和评分），请参阅 [评估 Skill 输出质量](/skill-creation/evaluating-skills)。
+For a more structured approach to iteration, including test cases, assertions, and grading, see [Evaluating skill output quality](/skill-creation/evaluating-skills).
 
-## 明智地使用上下文
+## Spending context wisely
 
-一旦 Skill 被激活，其完整的 `SKILL.md` 主体将与对话历史、系统上下文和其他活动的 Skills 一起加载到 Agent 的上下文窗口中。你的 Skill 中的每一个 token 都在与该窗口中的所有其他内容争夺 Agent 的注意力。
+Once a skill activates, its full `SKILL.md` body loads into the agent's context window alongside conversation history, system context, and other active skills. Every token in your skill competes for the agent's attention with everything else in that window.
 
-### 补充 Agent 缺乏的，省略它已知的
+### Add what the agent lacks, omit what it knows
 
-专注于如果没有你的 Skill，Agent *不会*知道的内容：特定于项目的约定、特定于领域的程序、不明显的边缘情况，以及要使用的特定工具或 API。你不需要解释什么是 PDF、HTTP 是如何工作的，或者数据库迁移是做什么的。
+Focus on what the agent *wouldn't* know without your skill: project-specific conventions, domain-specific procedures, non-obvious edge cases, and the particular tools or APIs to use. You don't need to explain what a PDF is, how HTTP works, or what a database migration does.
 
 ````markdown
-<!-- 过于冗长 —— Agent 已经知道什么是 PDF -->
-## 提取 PDF 文本
+<!-- Too verbose — the agent already knows what PDFs are -->
+## Extract PDF text
 
-PDF（便携式文档格式）文件是一种包含文本、图像和其他内容的常见文件格式。
-要从 PDF 中提取文本，你需要使用一个库。推荐使用 pdfplumber，因为它能很好地处理大多数情况。
+PDF (Portable Document Format) files are a common file format that contains
+text, images, and other content. To extract text from a PDF, you'll need to
+use a library. pdfplumber is recommended because it handles most cases well.
 
-<!-- 更好 —— 直接切入 Agent 自身不知道的内容 -->
-## 提取 PDF 文本
+<!-- Better — jumps straight to what the agent wouldn't know on its own -->
+## Extract PDF text
 
-使用 pdfplumber 进行文本提取。对于扫描文档，退而使用带有 pytesseract 的 pdf2image。
+Use pdfplumber for text extraction. For scanned documents, fall back to
+pdf2image with pytesseract.
 
 ```python
 import pdfplumber
@@ -71,181 +73,181 @@ with pdfplumber.open("file.pdf") as pdf:
 ```
 ````
 
-对每一部分内容问问自己：“如果没有这条指令，Agent 会弄错吗？”如果答案是否定的，就删掉它。如果你不确定，就测试一下。如果 Agent 在没有该 Skill 的情况下已经能很好地处理整个任务，那么该 Skill 可能并没有增加价值。有关如何系统地测试这一点，请参阅 [评估 Skill 输出质量](/skill-creation/evaluating-skills)。
+Ask yourself about each piece of content: "Would the agent get this wrong without this instruction?" If the answer is no, cut it. If you're unsure, test it. And if the agent already handles the entire task well without the skill, the skill may not be adding value. See [Evaluating skill output quality](/skill-creation/evaluating-skills) for how to test this systematically.
 
-### 设计连贯的单元
+### Design coherent units
 
-决定一个 Skill 应该涵盖什么，就像决定一个函数应该做什么一样：你希望它封装一个连贯的工作单元，并能与其他 Skills 很好地组合。范围过窄的 Skills 会迫使单个任务加载多个 Skills，从而带来开销和指令冲突的风险。范围过宽的 Skills 则变得难以精确激活。一个用于查询数据库并格式化结果的 Skill 可能是一个连贯的单元，而一个同时涵盖数据库管理的 Skill 可能试图做太多事情。
+Deciding what a skill should cover is like deciding what a function should do: you want it to encapsulate a coherent unit of work that composes well with other skills. Skills scoped too narrowly force multiple skills to load for a single task, risking overhead and conflicting instructions. Skills scoped too broadly become hard to activate precisely. A skill for querying a database and formatting the results may be one coherent unit, while a skill that also covers database administration is probably trying to do too much.
 
-### 追求适度的细节
+### Aim for moderate detail
 
-过于全面的 Skills 可能会弊大于利——Agent 会难以提取相关内容，并可能因为不适用于当前任务的指令而走上无用的路径。带有有效示例的简明、逐步的指导往往优于详尽的文档。当你发现自己涵盖了每一个边缘情况时，请考虑是否大多数情况最好由 Agent 自行判断处理。
+Overly comprehensive skills can hurt more than they help — the agent struggles to extract what's relevant and may pursue unproductive paths triggered by instructions that don't apply to the current task. Concise, stepwise guidance with a working example tends to outperform exhaustive documentation. When you find yourself covering every edge case, consider whether most are better handled by the agent's own judgment.
 
-### 使用渐进式披露构建大型 Skills
+### Structure large skills with progressive disclosure
 
-[规范](/specification#progressive-disclosure) 建议将 `SKILL.md` 保持在 500 行和 5,000 个 tokens 以内——仅包含 Agent 每次运行所需的核心指令。当一个 Skill 确实需要更多内容时，请将详细的参考材料移动到 `references/` 或类似目录中的单独文件里。
+The [specification](/specification#progressive-disclosure) recommends keeping `SKILL.md` under 500 lines and 5,000 tokens — just the core instructions the agent needs on every run. When a skill legitimately needs more content, move detailed reference material to separate files in `references/` or similar directories.
 
-关键在于告诉 Agent *何时*加载每个文件。“如果 API 返回非 200 状态码，请阅读 `references/api-errors.md`”比通用的“有关详细信息，请参阅 references/”更有用。这使得 Agent 能够按需加载上下文，而不是预先加载，这正是 [渐进式披露](/what-are-skills#how-skills-work) 的设计初衷。
+The key is telling the agent *when* to load each file. "Read `references/api-errors.md` if the API returns a non-200 status code" is more useful than a generic "see references/ for details." This lets the agent load context on demand rather than up front, which is how [progressive disclosure](/what-are-skills#how-skills-work) is designed to work.
 
-## 校准控制力度
+## Calibrating control
 
-并非 Skill 的每个部分都需要相同程度的规定性。请将指令的明确程度与任务的脆弱性相匹配。
+Not every part of a skill needs the same level of prescriptiveness. Match the specificity of your instructions to the fragility of the task.
 
-### 将明确程度与脆弱性相匹配
+### Match specificity to fragility
 
-**给予 Agent 自由度**：当多种方法都有效且任务容许差异时。对于灵活的指令，解释*原因*可能比死板的指示更有效——理解指令背后目的的 Agent 能做出更好的依赖于上下文的决策。一个代码审查 Skill 可以描述要寻找什么，而无需规定确切的步骤：
+**Give the agent freedom** when multiple approaches are valid and the task tolerates variation. For flexible instructions, explaining *why* can be more effective than rigid directives — an agent that understands the purpose behind an instruction makes better context-dependent decisions. A code review skill can describe what to look for without prescribing exact steps:
 
 ```markdown
-## 代码审查流程
+## Code review process
 
-1. 检查所有数据库查询是否存在 SQL 注入（使用参数化查询）
-2. 验证每个端点上的身份验证检查
-3. 在并发代码路径中寻找竞争条件
-4. 确认错误消息不会泄露内部细节
+1. Check all database queries for SQL injection (use parameterized queries)
+2. Verify authentication checks on every endpoint
+3. Look for race conditions in concurrent code paths
+4. Confirm error messages don't leak internal details
 ```
 
-**具有规定性**：当操作很脆弱、一致性很重要，或者必须遵循特定顺序时：
+**Be prescriptive** when operations are fragile, consistency matters, or a specific sequence must be followed:
 
 ````markdown
-## 数据库迁移
+## Database migration
 
-严格按照此顺序运行：
+Run exactly this sequence:
 
 ```bash
 python scripts/migrate.py --verify --backup
 ```
 
-不要修改命令或添加额外的标志。
+Do not modify the command or add additional flags.
 ````
 
-大多数 Skills 都是混合的。请独立校准每个部分。
+Most skills have a mix. Calibrate each part independently.
 
-### 提供默认值，而不是菜单
+### Provide defaults, not menus
 
-当多种工具或方法都可行时，选择一个默认值并简要提及替代方案，而不是将它们作为平等的选项呈现。
+When multiple tools or approaches could work, pick a default and mention alternatives briefly rather than presenting them as equal options.
 
 ````markdown
-<!-- 选项过多 -->
-你可以使用 pypdf、pdfplumber、PyMuPDF 或 pdf2image...
+<!-- Too many options -->
+You can use pypdf, pdfplumber, PyMuPDF, or pdf2image...
 
-<!-- 带有备用方案的明确默认值 -->
-使用 pdfplumber 进行文本提取：
+<!-- Clear default with escape hatch -->
+Use pdfplumber for text extraction:
 
 ```python
 import pdfplumber
 ```
 
-对于需要 OCR 的扫描版 PDF，请改用带有 pytesseract 的 pdf2image。
+For scanned PDFs requiring OCR, use pdf2image with pytesseract instead.
 ````
 
-### 倾向于过程而非声明
+### Favor procedures over declarations
 
-一个 Skill 应该教 Agent *如何处理*一类问题，而不是为特定实例*生成什么*。比较一下：
+A skill should teach the agent *how to approach* a class of problems, not *what to produce* for a specific instance. Compare:
 
 ```markdown
-<!-- 具体答案 —— 仅对这个确切的任务有用 -->
-在 `customer_id` 上将 `orders` 表与 `customers` 表连接，过滤
-`region = 'EMEA'` 的数据，并对 `amount` 列求和。
+<!-- Specific answer — only useful for this exact task -->
+Join the `orders` table to `customers` on `customer_id`, filter where
+`region = 'EMEA'`, and sum the `amount` column.
 
-<!-- 可复用方法 —— 适用于任何分析查询 -->
-1. 从 `references/schema.yaml` 读取模式（schema）以查找相关表
-2. 使用 `_id` 外键约定连接表
-3. 将用户请求中的任何过滤器作为 WHERE 子句应用
-4. 根据需要聚合数字列，并格式化为 Markdown 表格
+<!-- Reusable method — works for any analytical query -->
+1. Read the schema from `references/schema.yaml` to find relevant tables
+2. Join tables using the `_id` foreign key convention
+3. Apply any filters from the user's request as WHERE clauses
+4. Aggregate numeric columns as needed and format as a markdown table
 ```
 
-这并不意味着 Skills 不能包含具体细节——输出格式模板（参见 [输出格式模板](#templates-for-output-format)）、诸如“绝不输出 PII”之类的约束以及特定于工具的指令都很有价值。关键在于，即使个别细节是具体的，*方法*也应该是可泛化的。
+This doesn't mean skills can't include specific details — output format templates (see [Templates for output format](#templates-for-output-format)), constraints like "never output PII," and tool-specific instructions are all valuable. The point is that the *approach* should generalize even when individual details are specific.
 
-## 有效指令的模式
+## Patterns for effective instructions
 
-这些是用于构建 Skill 内容的可复用技术。并非每个 Skill 都需要所有这些技术——请使用适合你任务的技术。
+These are reusable techniques for structuring skill content. Not every skill needs all of them — use the ones that fit your task.
 
-### 输出格式模板
+### Templates for output format
 
-当你需要 Agent 以特定格式生成输出时，请提供一个模板。这比用文字描述格式更可靠，因为 Agent 能很好地对具体结构进行模式匹配。简短的模板可以直接内联在 `SKILL.md` 中；对于较长的模板，或者仅在某些情况下需要的模板，请将它们存储在 `assets/` 中，并从 `SKILL.md` 引用它们，以便它们仅在需要时加载。
+When you need the agent to produce output in a specific format, provide a template. This is more reliable than describing the format in prose, because agents pattern-match well against concrete structures. Short templates can live inline in `SKILL.md`; for longer templates, or templates only needed in certain cases, store them in `assets/` and reference them from `SKILL.md` so they only load when needed.
 
 ````markdown
-## 报告结构
+## Report structure
 
-使用此模板，根据具体分析的需要调整各个部分：
+Use this template, adapting sections as needed for the specific analysis:
 
 ```markdown
-# [分析标题]
+# [Analysis Title]
 
-## 执行摘要
-[关于主要发现的一段概述]
+## Executive summary
+[One-paragraph overview of key findings]
 
-## 主要发现
-- 带有支持数据的发现 1
-- 带有支持数据的发现 2
+## Key findings
+- Finding 1 with supporting data
+- Finding 2 with supporting data
 
-## 建议
-1. 具体的、可操作的建议
-2. 具体的、可操作的建议
+## Recommendations
+1. Specific actionable recommendation
+2. Specific actionable recommendation
 ```
 ````
 
-### 多步工作流的清单
+### Checklists for multi-step workflows
 
-明确的清单有助于 Agent 跟踪进度并避免跳过步骤，特别是当步骤具有依赖关系或验证关卡时。
-
-```markdown
-## 表单处理工作流
-
-进度：
-- [ ] 步骤 1：分析表单（运行 `scripts/analyze_form.py`）
-- [ ] 步骤 2：创建字段映射（编辑 `fields.json`）
-- [ ] 步骤 3：验证映射（运行 `scripts/validate_fields.py`）
-- [ ] 步骤 4：填写表单（运行 `scripts/fill_form.py`）
-- [ ] 步骤 5：验证输出（运行 `scripts/verify_output.py`）
-```
-
-### 验证循环
-
-指示 Agent 在继续之前验证自己的工作。模式是：完成工作，运行验证器（脚本、参考清单或自检），修复任何问题，并重复直到验证通过。
+An explicit checklist helps the agent track progress and avoid skipping steps, especially when steps have dependencies or validation gates.
 
 ```markdown
-## 编辑工作流
+## Form processing workflow
 
-1. 进行你的编辑
-2. 运行验证：`python scripts/validate.py output/`
-3. 如果验证失败：
-   - 查看错误消息
-   - 修复问题
-   - 再次运行验证
-4. 仅在验证通过时才继续
+Progress:
+- [ ] Step 1: Analyze the form (run `scripts/analyze_form.py`)
+- [ ] Step 2: Create field mapping (edit `fields.json`)
+- [ ] Step 3: Validate mapping (run `scripts/validate_fields.py`)
+- [ ] Step 4: Fill the form (run `scripts/fill_form.py`)
+- [ ] Step 5: Verify output (run `scripts/verify_output.py`)
 ```
 
-参考文档也可以作为“验证器”——指示 Agent 在最终确定之前对照参考文档检查其工作。
+### Validation loops
 
-### 计划-验证-执行
-
-对于批处理或破坏性操作，让 Agent 以结构化格式创建一个中间计划，对照事实来源（source of truth）对其进行验证，然后才执行。
+Instruct the agent to validate its own work before moving on. The pattern is: do the work, run a validator (a script, a reference checklist, or a self-check), fix any issues, and repeat until validation passes.
 
 ```markdown
-## PDF 表单填写
+## Editing workflow
 
-1. 提取表单字段：`python scripts/analyze_form.py input.pdf` → `form_fields.json`
-   （列出每个字段名称、类型以及是否必填）
-2. 创建 `field_values.json`，将每个字段名称映射到其预期值
-3. 验证：`python scripts/validate_fields.py form_fields.json field_values.json`
-   （检查表单中是否存在每个字段名称，类型是否兼容，以及
-   必填字段是否缺失）
-4. 如果验证失败，修改 `field_values.json` 并重新验证
-5. 填写表单：`python scripts/fill_form.py input.pdf field_values.json output.pdf`
+1. Make your edits
+2. Run validation: `python scripts/validate.py output/`
+3. If validation fails:
+   - Review the error message
+   - Fix the issues
+   - Run validation again
+4. Only proceed when validation passes
 ```
 
-关键要素是步骤 3：一个验证脚本，用于对照事实来源（`form_fields.json`）检查计划（`field_values.json`）。诸如“未找到字段 'signature_date' —— 可用字段：customer_name, order_total, signature_date_signed”之类的错误，能为 Agent 提供足够的信息来进行自我纠正。
+A reference document can also serve as the "validator" — instruct the agent to check its work against the reference before finalizing.
 
-### 打包可复用脚本
+### Plan-validate-execute
 
-在 [迭代 Skill](/skill-creation/evaluating-skills) 时，比较 Agent 在各个测试用例中的执行轨迹。如果你注意到 Agent 每次运行都在独立地重复发明相同的逻辑——构建图表、解析特定格式、验证输出——这就是一个信号，表明你应该编写一次经过测试的脚本并将其打包在 `scripts/` 中。
+For batch or destructive operations, have the agent create an intermediate plan in a structured format, validate it against a source of truth, and only then execute.
 
-有关设计和打包脚本的更多信息，请参阅 [在 Skills 中使用脚本](/skill-creation/using-scripts)。
+```markdown
+## PDF form filling
 
-## 后续步骤
+1. Extract form fields: `python scripts/analyze_form.py input.pdf` → `form_fields.json`
+   (lists every field name, type, and whether it's required)
+2. Create `field_values.json` mapping each field name to its intended value
+3. Validate: `python scripts/validate_fields.py form_fields.json field_values.json`
+   (checks that every field name exists in the form, types are compatible, and
+   required fields aren't missing)
+4. If validation fails, revise `field_values.json` and re-validate
+5. Fill the form: `python scripts/fill_form.py input.pdf field_values.json output.pdf`
+```
 
-一旦你拥有了一个可用的 Skill，以下两份指南可以帮助你进一步完善它：
+The key ingredient is step 3: a validation script that checks the plan (`field_values.json`) against the source of truth (`form_fields.json`). Errors like "Field 'signature_date' not found — available fields: customer_name, order_total, signature_date_signed" give the agent enough information to self-correct.
 
-- **[评估 Skill 输出质量](/skill-creation/evaluating-skills)** —— 设置测试用例，对结果进行评分，并系统地进行迭代。
-- **[优化 Skill 描述](/skill-creation/optimizing-descriptions)** —— 测试并改进你的 Skill 的 `description` 字段，以便它能在正确的提示词下触发。
+### Bundling reusable scripts
+
+When [iterating on a skill](/skill-creation/evaluating-skills), compare the agent's execution traces across test cases. If you notice the agent independently reinventing the same logic each run — building charts, parsing a specific format, validating output — that's a signal to write a tested script once and bundle it in `scripts/`.
+
+For more on designing and bundling scripts, see [Using scripts in skills](/skill-creation/using-scripts).
+
+## Next steps
+
+Once you have a working skill, two guides can help you refine it further:
+
+- **[Evaluating skill output quality](/skill-creation/evaluating-skills)** — Set up test cases, grade results, and iterate systematically.
+- **[Optimizing skill descriptions](/skill-creation/optimizing-descriptions)** — Test and improve your skill's `description` field so it triggers on the right prompts.

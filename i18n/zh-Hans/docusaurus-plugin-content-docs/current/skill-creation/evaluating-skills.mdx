@@ -1,0 +1,294 @@
+---
+title: "评估 Skill 输出质量"
+sidebarTitle: "评估 Skills"
+description: "如何使用评估驱动的迭代来测试你的 Skill 是否能产生良好的输出。"
+---
+
+你编写了一个 Skill，在一个提示词上进行了尝试，看起来效果不错。但它是否能可靠地工作——在各种不同的提示词下、在边缘情况中，是否比不使用 Skill 更好？运行结构化评估（evals）可以回答这些问题，并为你系统地改进 Skill 提供反馈循环。
+
+## 设计测试用例
+
+一个测试用例包含三个部分：
+
+- **Prompt**（提示词）：真实的用户消息——人们实际会输入的那种内容。
+- **Expected output**（预期输出）：对成功结果的人类可读描述。
+- **Input files**（输入文件，可选）：Skill 需要处理的文件。
+
+将测试用例存储在你的 Skill 目录下的 `evals/evals.json` 中：
+
+```json evals/evals.json
+{
+  "skill_name": "csv-analyzer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a CSV of monthly sales data in data/sales_2025.csv. Can you find the top 3 months by revenue and make a bar chart?",
+      "expected_output": "A bar chart image showing the top 3 months by revenue, with labeled axes and values.",
+      "files": ["evals/files/sales_2025.csv"]
+    },
+    {
+      "id": 2,
+      "prompt": "there's a csv in my downloads called customers.csv, some rows have missing emails — can you clean it up and tell me how many were missing?",
+      "expected_output": "A cleaned CSV with missing emails handled, plus a count of how many were missing.",
+      "files": ["evals/files/customers.csv"]
+    }
+  ]
+}
+```
+
+**编写优秀测试提示词的技巧：**
+
+- **从 2-3 个测试用例开始。** 在看到第一轮结果之前不要过度投入。你可以稍后扩展测试集。
+- **使提示词多样化。** 使用不同的措辞、细节程度和正式程度。有些提示词应该比较随意（“嘿，你能清理一下这个 csv 吗”），有些则应该精确（“解析 data/input.csv 处的 CSV，删除 B 列为空的行，并将结果写入 data/output.csv”）。
+- **覆盖边缘情况。** 至少包含一个测试边界条件的提示词——格式错误的输入、不寻常的请求，或者 Skill 指令可能存在歧义的情况。
+- **使用真实的上下文。** 真实用户会提及文件路径、列名和个人上下文。像“处理这些数据”这样的提示词太模糊了，无法测试出任何有用的东西。
+
+现在还不用担心定义具体的通过/失败检查——只需关注提示词和预期输出即可。在看到首次运行产生的结果后，你再添加详细的检查（称为断言，assertions）。
+
+## 运行评估
+
+核心模式是将每个测试用例运行两次：一次 **使用 Skill**，一次 **不使用 Skill**（或使用以前的版本）。这为你提供了一个可供比较的基准。
+
+### 工作区结构
+
+在你的 Skill 目录旁边的工作区目录中组织评估结果。每次完整的评估循环都会获得其自己的 `iteration-N/` 目录。在其中，每个测试用例都有一个评估目录，包含 `with_skill/` 和 `without_skill/` 子目录：
+
+```
+csv-analyzer-workspace/
+└── iteration-1/
+    ├── eval-top-months-chart/
+    │   ├── with_skill/
+    │   │   ├── outputs/       # 运行产生的文件
+    │   │   ├── timing.json    # Token 数量和持续时间
+    │   │   └── grading.json   # 断言结果
+    │   └── without_skill/
+    │       ├── outputs/
+    │       ├── timing.json
+    │       └── grading.json
+    ├── eval-clean-missing-emails/
+    │   ├── with_skill/
+    │   │   ├── outputs/
+    │   │   ├── timing.json
+    │   │   └── grading.json
+    │   └── without_skill/
+    │       ├── outputs/
+    │       ├── timing.json
+    │       └── grading.json
+    └── benchmark.json         # 汇总统计数据
+```
+
+你手动编写的主要文件是 `evals/evals.json`。其他 JSON 文件（`grading.json`、`timing.json`、`benchmark.json`）是在评估过程中生成的——由 Agent、脚本或你本人生成。
+
+### 启动运行
+
+每次评估运行都应从一个干净的上下文开始——没有来自先前运行或 Skill 开发过程的残留状态。这确保了 Agent 仅遵循 `SKILL.md` 的指示。在支持子 Agent（例如 Claude Code）的环境中，这种隔离是自然而然的：每个子任务都是重新开始的。如果没有子 Agent，请为每次运行使用单独的会话。
+
+对于每次运行，请提供：
+
+- Skill 路径（或基准测试不提供 Skill）
+- 测试提示词
+- 任何输入文件
+- 输出目录
+
+以下是你为单次使用 Skill 的运行向 Agent 提供指令的示例：
+
+```
+Execute this task:
+- Skill path: /path/to/csv-analyzer
+- Task: I have a CSV of monthly sales data in data/sales_2025.csv.
+  Can you find the top 3 months by revenue and make a bar chart?
+- Input files: evals/files/sales_2025.csv
+- Save outputs to: csv-analyzer-workspace/iteration-1/eval-top-months-chart/with_skill/outputs/
+```
+
+对于基准测试，使用相同的提示词但不包含 Skill 路径，并保存到 `without_skill/outputs/`。
+
+在改进现有的 Skill 时，使用以前的版本作为基准。在编辑之前对其进行快照（`cp -r <skill-path> <workspace>/skill-snapshot/`），将基准运行指向该快照，并保存到 `old_skill/outputs/` 而不是 `without_skill/`。
+
+### 捕获计时数据
+
+计时数据让你能够比较 Skill 相对于基准测试所花费的时间和 Token 数量——一个显著提高输出质量但 Token 使用量增加两倍的 Skill，与一个既更好又更便宜的 Skill 相比，是不同的权衡。每次运行完成时，记录 Token 数量和持续时间：
+
+```json timing.json
+{
+  "total_tokens": 84852,
+  "duration_ms": 23332
+}
+```
+
+<Tip>
+在 Claude Code 中，当子 Agent 任务完成时，[任务完成通知](https://platform.claude.com/docs/en/agent-sdk/typescript#sdk-task-notification-message) 会包含 `total_tokens` 和 `duration_ms`。请立即保存这些值——它们不会持久化保存在其他任何地方。
+</Tip>
+
+## 编写断言
+
+断言是关于输出应包含或实现什么内容的可验证陈述。在看到第一轮输出后添加它们——通常在 Skill 运行之前，你并不知道“好”的输出是什么样的。
+
+好的断言：
+
+- `"The output file is valid JSON"`（输出文件是有效的 JSON）——可通过编程验证。
+- `"The bar chart has labeled axes"`（柱状图有坐标轴标签）——具体且可观察。
+- `"The report includes at least 3 recommendations"`（报告至少包含 3 条建议）——可计数。
+
+弱的断言：
+
+- `"The output is good"`（输出很好）——太模糊，无法评分。
+- `"The output uses exactly the phrase 'Total Revenue: $X'"`（输出完全使用了“总收入：$X”这个短语）——太脆弱；措辞不同但正确的输出也会失败。
+
+并非所有内容都需要断言。某些品质——写作风格、视觉设计、输出是否“感觉正确”——很难分解为通过/失败的检查。这些最好在[人工审查](#reviewing-results-with-a-human)期间捕获。将断言保留给可以客观检查的事物。
+
+将断言添加到 `evals/evals.json` 中的每个测试用例：
+
+```json evals/evals.json highlight={9-14}
+{
+  "skill_name": "csv-analyzer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a CSV of monthly sales data in data/sales_2025.csv. Can you find the top 3 months by revenue and make a bar chart?",
+      "expected_output": "A bar chart image showing the top 3 months by revenue, with labeled axes and values.",
+      "files": ["evals/files/sales_2025.csv"],
+      "assertions": [
+        "The output includes a bar chart image file",
+        "The chart shows exactly 3 months",
+        "Both axes are labeled",
+        "The chart title or caption mentions revenue"
+      ]
+    }
+  ]
+}
+```
+
+## 对输出进行评分
+
+评分意味着根据实际输出评估每个断言，并记录 **PASS**（通过）或 **FAIL**（失败）以及具体的证据。证据应引用或参考输出，而不仅仅是陈述意见。
+
+最简单的方法是将输出和断言提供给 LLM，并要求它评估每一个。对于可以通过代码检查的断言（有效的 JSON、正确的行数、具有预期尺寸的文件是否存在），请使用验证脚本——对于机械检查，脚本比 LLM 的判断更可靠，并且可以在迭代中重复使用。
+
+```json grading.json
+{
+  "assertion_results": [
+    {
+      "text": "The output includes a bar chart image file",
+      "passed": true,
+      "evidence": "Found chart.png (45KB) in outputs directory"
+    },
+    {
+      "text": "The chart shows exactly 3 months",
+      "passed": true,
+      "evidence": "Chart displays bars for March, July, and November"
+    },
+    {
+      "text": "Both axes are labeled",
+      "passed": false,
+      "evidence": "Y-axis is labeled 'Revenue ($)' but X-axis has no label"
+    },
+    {
+      "text": "The chart title or caption mentions revenue",
+      "passed": true,
+      "evidence": "Chart title reads 'Top 3 Months by Revenue'"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  }
+}
+```
+
+### 评分原则
+
+- **要求提供具体的证据才能判定为 PASS。** 不要轻易给予通过。如果断言说“包含摘要”，而输出有一个标题为“摘要”的部分，但只有一句模糊的话，那就是 FAIL——标签虽然在，但实质内容没有。
+- **审查断言本身，而不仅仅是结果。** 在评分时，注意断言是否太容易（无论 Skill 质量如何总是通过）、太难（即使输出很好也总是失败）或不可验证（无法仅从输出中检查）。在下一次迭代中修复这些问题。
+
+<Tip>
+为了比较两个 Skill 版本，请尝试 **盲测比较**：将两个输出呈现给 LLM 评委，而不透露哪个输出属于哪个版本。评委根据自己的标准对整体质量（组织、格式、可用性、润色）进行评分，不受哪个版本“应该”更好的偏见影响。这是对断言评分的补充：两个输出可能都通过了所有断言，但在整体质量上却有显著差异。
+</Tip>
+
+## 汇总结果
+
+一旦迭代中的每次运行都完成了评分，请计算每个配置的汇总统计数据，并将它们保存到评估目录旁边的 `benchmark.json` 中（例如，`csv-analyzer-workspace/iteration-1/benchmark.json`）：
+
+```json benchmark.json
+{
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": { "mean": 0.83, "stddev": 0.06 },
+      "time_seconds": { "mean": 45.0, "stddev": 12.0 },
+      "tokens": { "mean": 3800, "stddev": 400 }
+    },
+    "without_skill": {
+      "pass_rate": { "mean": 0.33, "stddev": 0.10 },
+      "time_seconds": { "mean": 32.0, "stddev": 8.0 },
+      "tokens": { "mean": 2100, "stddev": 300 }
+    },
+    "delta": {
+      "pass_rate": 0.50,
+      "time_seconds": 13.0,
+      "tokens": 1700
+    }
+  }
+}
+```
+
+`delta` 告诉你 Skill 的成本（更多时间、更多 Token）以及它带来的收益（更高的通过率）。一个增加了 13 秒但将通过率提高了 50 个百分点的 Skill 可能是值得的。而一个使 Token 使用量翻倍却只带来 2 个百分点提升的 Skill 可能就不值得了。
+
+<Note>
+标准差（`stddev`）仅在每次评估进行多次运行时才有意义。在只有 2-3 个测试用例和单次运行的早期迭代中，请关注原始通过计数和 delta——随着你扩展测试集并多次运行每次评估，统计指标才会变得有用。
+</Note>
+
+## 分析模式
+
+汇总统计数据可能会掩盖重要的模式。在计算基准测试之后：
+
+- **删除或替换在两种配置中总是通过的断言。** 这些断言不能告诉你任何有用的信息——模型在没有 Skill 的情况下也能很好地处理它们。它们夸大了使用 Skill 的通过率，而没有反映出 Skill 的实际价值。
+- **调查在两种配置中总是失败的断言。** 要么是断言有问题（要求模型做不到的事情），要么是测试用例太难，或者断言检查的内容不对。在下一次迭代之前修复这些问题。
+- **研究使用 Skill 时通过但不使用时失败的断言。** 这正是 Skill 明显增加价值的地方。了解 *为什么*——是哪些指令或脚本发挥了作用？
+- **当多次运行的结果不一致时，收紧指令。** 如果同一个评估有时通过有时失败（在基准测试中反映为高 `stddev`），则该评估可能不稳定（对模型的随机性敏感），或者 Skill 的指令可能足够模糊，以至于模型每次的解释都不同。添加示例或更具体的指导以减少歧义。
+- **检查时间和 Token 的异常值。** 如果一个评估花费的时间是其他评估的 3 倍，请阅读其执行记录（模型在运行期间所做操作的完整日志）以找到瓶颈。
+
+## 人工审查结果
+
+断言评分和模式分析能捕获很多问题，但它们只检查你想到要编写断言的内容。人工审查者能带来全新的视角——捕获你未曾预料到的问题，注意到输出在技术上正确但未抓住重点的情况，或者发现难以用通过/失败检查来表达的问题。对于每个测试用例，请结合评分一起审查实际输出。
+
+记录每个测试用例的具体反馈，并将其保存在工作区中（例如，作为 `feedback.json` 保存在评估目录旁边）：
+
+```json feedback.json
+{
+  "eval-top-months-chart": "The chart is missing axis labels and the months are in alphabetical order instead of chronological.",
+  "eval-clean-missing-emails": ""
+}
+```
+
+“图表缺少坐标轴标签”是可操作的；“看起来很糟糕”则不是。空反馈意味着输出看起来很好——该测试用例通过了你的审查。在[迭代步骤](#iterating-on-the-skill)中，将改进重点放在你有具体抱怨的测试用例上。
+
+## 迭代 Skill
+
+在评分和审查之后，你拥有三个信号来源：
+
+- **失败的断言** 指向具体的差距——缺失的步骤、不清晰的指令或 Skill 未处理的情况。
+- **人工反馈** 指向更广泛的质量问题——方法错误、输出结构不佳，或者 Skill 产生了技术上正确但无用的结果。
+- **执行记录** 揭示了事情出错的 *原因*。如果 Agent 忽略了某条指令，该指令可能存在歧义。如果 Agent 在无成效的步骤上花费了时间，则可能需要简化或删除这些指令。
+
+将这些信号转化为 Skill 改进的最有效方法是将这三者——连同当前的 `SKILL.md`——提供给 LLM，并要求它提出修改建议。LLM 可以综合失败的断言、审查者的抱怨和记录行为中的模式，而手动连接这些模式将非常繁琐。在提示 LLM 时，请包含以下准则：
+
+- **从反馈中归纳总结。** Skill 将用于许多不同的提示词，而不仅仅是测试用例。修复应广泛解决潜在问题，而不是为特定示例添加狭隘的补丁。
+- **保持 Skill 精简。** 更少、更好的指令通常优于详尽的规则。如果记录显示存在浪费的工作（不必要的验证、不需要的中间输出），请删除这些指令。如果尽管添加了更多规则，通过率仍停滞不前，则 Skill 可能受到过度约束——尝试删除指令，看看结果是否保持不变或有所改善。
+- **解释原因。** 基于推理的指令（“做 X，因为 Y 往往会导致 Z”）比死板的指令（“总是做 X，永远不要做 Y”）效果更好。当模型理解目的时，它们会更可靠地遵循指令。
+- **捆绑重复的工作。** 如果每次测试运行都独立编写了类似的辅助脚本（图表构建器、数据解析器），这就是一个信号，表明应将该脚本捆绑到 Skill 的 `scripts/` 目录中。有关如何执行此操作，请参阅 [使用脚本](/skill-creation/using-scripts)。
+
+### 循环
+
+1. 将评估信号和当前的 `SKILL.md` 提供给 LLM，并要求它提出改进建议。
+2. 审查并应用更改。
+3. 在新的 `iteration-<N+1>/` 目录中重新运行所有测试用例。
+4. 对新结果进行评分和汇总。
+5. 进行人工审查。重复上述步骤。
+
+当你对结果感到满意、反馈始终为空，或者你不再看到迭代之间有意义的改进时，即可停止。
+
+<Tip>
+[`skill-creator`](https://github.com/anthropics/skills/tree/main/skills/skill-creator) Skill 自动化了此工作流程的大部分内容——运行评估、对断言进行评分、汇总基准测试，并呈现结果以供人工审查。
+</Tip>

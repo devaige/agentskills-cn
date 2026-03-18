@@ -1,0 +1,71 @@
+---
+title: "什么是 Skills？"
+description: "Agent Skills 是一种轻量级、开放的格式，用于通过专业知识和工作流扩展 AI Agent 的能力。"
+---
+
+从本质上讲，一个 skill 就是一个包含 `SKILL.md` 文件的文件夹。该文件包含元数据（至少包含 `name` 和 `description`）以及告诉 Agent 如何执行特定任务的指令。Skills 还可以捆绑脚本、模板和参考资料。
+
+```directory
+my-skill/
+├── SKILL.md          # 必填：指令 + 元数据
+├── scripts/          # 可选：可执行代码
+├── references/       # 可选：文档
+└── assets/           # 可选：模板、资源
+```
+
+## Skills 是如何工作的
+
+Skills 使用**渐进式披露（progressive disclosure）**来高效管理上下文：
+
+1. **发现（Discovery）**：在启动时，Agent 仅加载每个可用 skill 的名称和描述，这足以让它知道何时可能需要用到该 skill。  
+     
+2. **激活（Activation）**：当任务与某个 skill 的描述匹配时，Agent 会将完整的 `SKILL.md` 指令读取到上下文中。  
+     
+3. **执行（Execution）**：Agent 遵循指令，根据需要选择性地加载引用的文件或执行捆绑的代码。
+
+这种方法保持了 Agent 的运行速度，同时允许它们按需访问更多上下文。
+
+## SKILL.md 文件
+
+每个 skill 都以一个包含 YAML Frontmatter 和 Markdown 指令的 `SKILL.md` 文件为起点：
+
+```mdx
+---
+name: pdf-processing
+description: Extract PDF text, fill forms, merge files. Use when handling PDFs.
+---
+
+# PDF Processing
+
+## When to use this skill
+Use this skill when the user needs to work with PDF files...
+
+## How to extract text
+1. Use pdfplumber for text extraction...
+
+## How to fill forms
+...
+```
+
+在 `SKILL.md` 的顶部需要包含以下 Frontmatter：
+
+- `name`：简短的标识符 
+- `description`：何时使用此 skill
+
+Markdown 主体包含实际的指令，对结构或内容没有任何特定限制。
+
+这种简单的格式具有一些关键优势：
+
+- **自文档化（Self-documenting）**：skill 的作者或用户可以通过阅读 `SKILL.md` 来了解它的功能，这使得 Skills 易于审计和改进。
+
+- **可扩展（Extensible）**：Skills 的复杂程度各不相同，从纯文本指令到可执行代码、资源和模板均可包含。
+
+- **便携性（Portable）**：Skills 只是文件，因此它们很容易编辑、进行版本控制和共享。
+
+## 下一步
+
+- [查看规范](/specification)以了解完整格式。
+- [为你的 Agent 添加 Skills 支持](/client-implementation/adding-skills-support)以构建兼容的客户端。
+- 在 GitHub 上[查看示例 Skills](https://github.com/anthropics/skills)。
+- [阅读编写最佳实践](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)以编写高效的 Skills。
+- [使用参考库](https://github.com/agentskills/agentskills/tree/main/skills-ref)来验证 Skills 并生成提示词 XML。

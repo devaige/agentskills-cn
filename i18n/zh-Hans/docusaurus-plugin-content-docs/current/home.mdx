@@ -1,0 +1,78 @@
+---
+slug: /
+title: "概述"
+description: "一个简单、开放的格式，用于赋予 Agent 新的能力和专业知识。"
+---
+
+import { LogoCarousel } from '/snippets/LogoCarousel.jsx';
+
+Agent Skills 是包含指令、脚本和资源的文件夹，Agent 可以发现并使用它们来更准确、更高效地完成任务。
+
+## 为什么需要 Agent Skills？
+
+Agent 的能力越来越强，但通常缺乏可靠地完成实际工作所需的上下文。Skills 通过让 Agent 能够访问程序性知识以及特定于公司、团队和用户的上下文（这些上下文可以按需加载）来解决这个问题。能够访问一组 Skills 的 Agent 可以根据正在处理的任务扩展其能力。
+
+**对于 Skill 作者**：一次构建能力，即可在多个 Agent 产品中部署。
+
+**对于兼容的 Agent**：对 Skills 的支持使得最终用户能够开箱即用地赋予 Agent 新的能力。
+
+**对于团队和企业**：将组织知识捕获到可移植、受版本控制的包中。
+
+## Agent Skills 能实现什么？
+
+- **领域专业知识**：将专业知识打包成可重用的指令，从法律审查流程到数据分析流水线。
+- **新能力**：赋予 Agent 新的能力（例如：创建演示文稿、构建 MCP 服务器、分析数据集）。
+- **可重复的工作流**：将多步任务转化为一致且可审计的工作流。
+- **互操作性**：在不同的兼容 Skills 的 Agent 产品中重用同一个 Skill。
+
+## 采用情况
+
+Agent Skills 已获得领先的 AI 开发工具的支持。
+
+<LogoCarousel />
+
+## 开放式开发
+
+Agent Skills 格式最初由 [Anthropic](https://www.anthropic.com/) 开发，作为开放标准发布，并已被越来越多的 Agent 产品采用。该标准对来自更广泛生态系统的贡献保持开放。
+
+[在 GitHub 上查看](https://github.com/agentskills/agentskills)
+
+## 快速入门
+
+<CardGroup cols={3}>
+  <Card
+    title="什么是 Skills？"
+    icon="lightbulb"
+    href="/what-are-skills"
+  >
+    了解 Skills、它们的工作原理以及为什么它们很重要。
+  </Card>
+  <Card
+    title="规范"
+    icon="file-code"
+    href="/specification"
+  >
+    SKILL.md 文件的完整格式规范。
+  </Card>
+  <Card
+    title="添加 Skills 支持"
+    icon="gear"
+    href="/client-implementation/adding-skills-support"
+  >
+    为你的 Agent 或工具添加 Skills 支持。
+  </Card>
+  <Card
+    title="示例 Skills"
+    icon="code"
+    href="https://github.com/anthropics/skills"
+  >
+    在 GitHub 上浏览示例 Skills。
+  </Card>
+  <Card
+    title="参考库"
+    icon="wrench"
+    href="https://github.com/agentskills/agentskills/tree/main/skills-ref"
+  >
+    验证 Skills 并生成提示词 XML。
+  </Card>
+</CardGroup>

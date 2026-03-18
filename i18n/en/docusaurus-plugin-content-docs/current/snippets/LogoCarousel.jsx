@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+
 {/*
   LogoCarousel component for the Agent Skills documentation.
   Shuffles logos on each page load for fair exposure.

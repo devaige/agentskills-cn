@@ -2,7 +2,9 @@
   "name": "agentskills",
   "private": true,
   "scripts": {
-    "start": "docusaurus start",
+    "start": "docusaurus start --locale zh-Hans",
+    "start:zh": "docusaurus start --locale zh-Hans",
+    "start:en": "docusaurus start --locale en",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "clear": "docusaurus clear",

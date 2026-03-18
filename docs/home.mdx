@@ -1,77 +1,78 @@
 ---
-title: "概述"
-description: "一个简单、开放的格式，用于赋予 Agent 新的能力和专业知识。"
+slug: /
+title: "Overview"
+description: "A simple, open format for giving agents new capabilities and expertise."
 ---
 
 import { LogoCarousel } from '/snippets/LogoCarousel.jsx';
 
-Agent Skills 是包含指令、脚本和资源的文件夹，Agent 可以发现并使用它们来更准确、更高效地完成任务。
+Agent Skills are folders of instructions, scripts, and resources that agents can discover and use to do things more accurately and efficiently.
 
-## 为什么需要 Agent Skills？
+## Why Agent Skills?
 
-Agent 的能力越来越强，但通常缺乏可靠地完成实际工作所需的上下文。Skills 通过让 Agent 能够访问程序性知识以及特定于公司、团队和用户的上下文（这些上下文可以按需加载）来解决这个问题。能够访问一组 Skills 的 Agent 可以根据正在处理的任务扩展其能力。
+Agents are increasingly capable, but often don't have the context they need to do real work reliably. Skills solve this by giving agents access to procedural knowledge and company-, team-, and user-specific context they can load on demand. Agents with access to a set of skills can extend their capabilities based on the task they're working on.
 
-**对于 Skill 作者**：一次构建能力，即可在多个 Agent 产品中部署。
+**For skill authors**: Build capabilities once and deploy them across multiple agent products.
 
-**对于兼容的 Agent**：对 Skills 的支持使得最终用户能够开箱即用地赋予 Agent 新的能力。
+**For compatible agents**: Support for skills lets end users give agents new capabilities out of the box.
 
-**对于团队和企业**：将组织知识捕获到可移植、受版本控制的包中。
+**For teams and enterprises**: Capture organizational knowledge in portable, version-controlled packages.
 
-## Agent Skills 能实现什么？
+## What can Agent Skills enable?
 
-- **领域专业知识**：将专业知识打包成可重用的指令，从法律审查流程到数据分析流水线。
-- **新能力**：赋予 Agent 新的能力（例如：创建演示文稿、构建 MCP 服务器、分析数据集）。
-- **可重复的工作流**：将多步任务转化为一致且可审计的工作流。
-- **互操作性**：在不同的兼容 Skills 的 Agent 产品中重用同一个 Skill。
+- **Domain expertise**: Package specialized knowledge into reusable instructions, from legal review processes to data analysis pipelines.
+- **New capabilities**: Give agents new capabilities (e.g. creating presentations, building MCP servers, analyzing datasets).
+- **Repeatable workflows**: Turn multi-step tasks into consistent and auditable workflows.
+- **Interoperability**: Reuse the same skill across different skills-compatible agent products.
 
-## 采用情况
+## Adoption
 
-Agent Skills 已获得领先的 AI 开发工具的支持。
+Agent Skills are supported by leading AI development tools.
 
 <LogoCarousel />
 
-## 开放式开发
+## Open development
 
-Agent Skills 格式最初由 [Anthropic](https://www.anthropic.com/) 开发，作为开放标准发布，并已被越来越多的 Agent 产品采用。该标准对来自更广泛生态系统的贡献保持开放。
+The Agent Skills format was originally developed by [Anthropic](https://www.anthropic.com/), released as an open standard, and has been adopted by a growing number of agent products. The standard is open to contributions from the broader ecosystem.
 
-[在 GitHub 上查看](https://github.com/agentskills/agentskills)
+[View on GitHub](https://github.com/agentskills/agentskills)
 
-## 快速入门
+## Get started
 
 <CardGroup cols={3}>
   <Card
-    title="什么是 Skills？"
+    title="What are skills?"
     icon="lightbulb"
     href="/what-are-skills"
   >
-    了解 Skills、它们的工作原理以及为什么它们很重要。
+    Learn about skills, how they work, and why they matter.
   </Card>
   <Card
-    title="规范"
+    title="Specification"
     icon="file-code"
     href="/specification"
   >
-    SKILL.md 文件的完整格式规范。
+    The complete format specification for SKILL.md files.
   </Card>
   <Card
-    title="添加 Skills 支持"
+    title="Add skills support"
     icon="gear"
     href="/client-implementation/adding-skills-support"
   >
-    为你的 Agent 或工具添加 Skills 支持。
+    Add skills support to your agent or tool.
   </Card>
   <Card
-    title="示例 Skills"
+    title="Example skills"
     icon="code"
     href="https://github.com/anthropics/skills"
   >
-    在 GitHub 上浏览示例 Skills。
+    Browse example skills on GitHub.
   </Card>
   <Card
-    title="参考库"
+    title="Reference library"
     icon="wrench"
     href="https://github.com/agentskills/agentskills/tree/main/skills-ref"
   >
-    验证 Skills 并生成提示词 XML。
+    Validate skills and generate prompt XML.
   </Card>
 </CardGroup>

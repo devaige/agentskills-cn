@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 {/*
   LogoCarousel component for the Agent Skills documentation.
   Shuffles logos on each page load for fair exposure.
@@ -282,7 +283,7 @@ export const LogoCarousel = () => {
   return (
     <>
       <div className="logo-carousel">
-        <div className="logo-carousel-track track-1">
+        <div className="logo-carousel-track" style={{ animation: 'logo-scroll 50s linear infinite' }}>
           {row1Doubled.map((logo, i) => (
             <a key={`${logo.name}-${i}`} href={logo.url} style={{ textDecoration: 'none', border: 'none' }}>
               <img className="block dark:hidden object-contain" style={{ width: logo.width || '150px', maxWidth: '100%' }} src={logo.lightSrc} alt={logo.name} />
@@ -292,7 +293,7 @@ export const LogoCarousel = () => {
         </div>
       </div>
       <div className="logo-carousel">
-        <div className="logo-carousel-track track-2">
+        <div className="logo-carousel-track" style={{ animation: 'logo-scroll 60s linear infinite reverse' }}>
           {row2Doubled.map((logo, i) => (
             <a key={`${logo.name}-${i}`} href={logo.url} style={{ textDecoration: 'none', border: 'none' }}>
               <img className="block dark:hidden object-contain" style={{ width: logo.width || '150px', maxWidth: '100%' }} src={logo.lightSrc} alt={logo.name} />
