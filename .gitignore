@@ -50,3 +50,7 @@ docs/context.md
 
 # Custom local scripts
 scripts/translate.mjs
+
+# i18n
+i18n/*/docusaurus-plugin-content-docs/current/CLAUDE.md
+i18n/*/docusaurus-plugin-content-docs/current/README.md
